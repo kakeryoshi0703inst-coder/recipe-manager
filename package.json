@@ -1,0 +1,20 @@
+{
+  "name": "recipe-manager",
+  "version": "6.0.0",
+  "description": "Recipe Manager - 料理のためのパーソナルOS (Master Ver.6)",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "recipe",
+    "cooking",
+    "inventory",
+    "shopping",
+    "supermarket",
+    "price-comparison",
+    "ai-recommendation"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}

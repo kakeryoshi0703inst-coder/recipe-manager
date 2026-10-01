@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Recipe Manager - 料理のためのパーソナルOS (9:16 スマホ最適化)</title>
+  
+  <!-- Favicon & PWA Icons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍳</text></svg>">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#f97316">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RecipeOS">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23f97316'/><text x='50%' y='68%' font-size='280' text-anchor='middle'>🍳</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Zen Kaku Gothic New"', 'Inter', 'system-ui', 'sans-serif'],
+            display: ['Inter', '"Zen Kaku Gothic New"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              300: '#fdba74',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            }
+          },
+          aspectRatio: {
+            '9/16': '9 / 16',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(4px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          },
+          animation: {
+            fadeIn: 'fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom mobile-first scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.3);
+      border-radius: 9999px;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    input, select, textarea {
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    input[type="date"] {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      display: block !important;
+    }
+
+    /* 9:16 Smartphone Container Setup */
+    body {
+      background-color: #0f172a; /* Slate 900 background for PC simulator effect */
+    }
+    
+    .phone-frame {
+      width: 100%;
+      max-width: 430px; /* iPhone 15 Pro Max width standard */
+      height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: #f8fafc;
+      overflow: hidden;
+    }
+
+    .dark .phone-frame {
+      background-color: #090d16;
+    }
+
+    /* Safe Area Spacing for Mobile / PWA */
+    @supports (padding-top: env(safe-area-inset-top)) {
+      @media (max-width: 639px) {
+        #app-header header {
+          padding-top: max(env(safe-area-inset-top, 0px), 14px) !important;
+        }
+        #app-mobile-nav nav {
+          padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px) !important;
+        }
+        .modal-screen {
+          padding-top: max(env(safe-area-inset-top, 0px), 20px) !important;
+          padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px) !important;
+        }
+      }
+    }
+
+    @media (min-width: 640px) {
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 16px;
+        background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+      }
+      .phone-frame {
+        height: 890px;
+        max-height: 94vh;
+        border-radius: 46px;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 10px #1e293b, 0 0 0 12px #334155;
+      }
+      .dark .phone-frame {
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 0 10px #0f172a, 0 0 0 12px #1e293b;
+      }
+    }
+  </style>
+</head>
+<body class="h-full text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-orange-500 selection:text-white">
+  
+  <!-- Smartphone 9:16 Device Container -->
+  <div id="phone-container" class="phone-frame shadow-2xl">
+    
+    <!-- Smartphone Dynamic Island / Notch Bar (Visible on desktop frame) -->
+    <div class="hidden sm:flex items-center justify-between px-7 pt-3 pb-1 text-[12px] font-semibold text-slate-800 dark:text-slate-200 z-50 select-none bg-transparent">
+      <span id="phone-clock" class="font-mono">12:00</span>
+      <div class="w-24 h-5 bg-black rounded-full mx-auto flex items-center justify-end px-2 gap-1.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700"></span>
+        <span class="w-2 h-2 rounded-full bg-blue-900/60"></span>
+      </div>
+      <div class="flex items-center gap-1.5 text-[11px]">
+        <span>5G</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- App Header (Sticky Top) -->
+    <div id="app-header"></div>
+
+    <!-- Main Scrollable Content Area -->
+    <main id="app-main-view" class="flex-1 overflow-y-auto overflow-x-hidden p-4 pb-24 scrollbar-none"></main>
+
+    <!-- Smartphone Mobile Bottom Navigation (Sticky Bottom) -->
+    <div id="app-mobile-nav"></div>
+
+    <!-- Hidden desktop sidebar placeholder for state compatibility -->
+    <div id="app-sidebar" class="hidden"></div>
+
+    <!-- Persistent Global Floating Timer Bar -->
+    <div id="app-timer-bar" class="hidden"></div>
+
+    <!-- Modal Container -->
+    <div id="app-modal-container"></div>
+  </div>
+
+  <!-- Standalone Script -->
+  <script src="./bundle.js"></script>
+
+  <!-- Live Clock updater for phone status bar -->
+  <script>
+    function updateClock() {
+      const el = document.getElementById('phone-clock');
+      if (el) {
+        const d = new Date();
+        el.textContent = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+      }
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+  </script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+          console.log('SW registration error:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
