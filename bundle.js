@@ -1777,21 +1777,23 @@ class MobileApp {
           </select>
         </div>
 
-        <div class="p-3 rounded-2xl bg-orange-50/60 dark:bg-orange-950/30 border border-orange-200/60 space-y-2 min-w-0 max-w-full overflow-hidden box-border">
-          <label class="block font-bold text-orange-900 dark:text-orange-200 text-xs">
-            ⏳ 賞味期限・消費期限 <span class="text-rose-500">*</span>
-          </label>
-          <div class="w-full min-w-0">
-            <input id="stok-in-exp" type="date" value="${defaultExp}" required class="w-full min-w-0 max-w-full px-2.5 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono font-bold text-xs outline-none box-border block" />
+        <div class="p-3.5 rounded-2xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-900/60 min-w-0 max-w-full box-border">
+          <div class="mb-2">
+            <label for="stok-in-exp" class="block font-bold text-orange-900 dark:text-orange-200 text-xs leading-normal">
+              ⏳ 賞味期限・消費期限 <span class="text-rose-500 font-bold">*</span>
+            </label>
+          </div>
+          <div class="w-full min-w-0 mb-3">
+            <input id="stok-in-exp" type="date" value="${defaultExp}" required class="w-full min-w-0 max-w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono font-bold text-xs text-slate-900 dark:text-white outline-none box-border block shadow-sm focus:border-orange-500" />
           </div>
           
-          <div class="pt-0.5 space-y-1.5 min-w-0">
-            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold block">⚡ クイック設定</span>
+          <div class="pt-2 border-t border-orange-200/50 dark:border-orange-900/40">
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold block mb-1.5">⚡ クイック設定</span>
             <div class="grid grid-cols-4 gap-1.5 min-w-0">
-              <button type="button" data-exp-offset="1" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0">明日</button>
-              <button type="button" data-exp-offset="3" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0">+3日</button>
-              <button type="button" data-exp-offset="7" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0">+7日</button>
-              <button type="button" data-exp-offset="30" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0">+30日</button>
+              <button type="button" data-exp-offset="1" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0 text-slate-700 dark:text-slate-200">明日</button>
+              <button type="button" data-exp-offset="3" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0 text-slate-700 dark:text-slate-200">+3日</button>
+              <button type="button" data-exp-offset="7" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0 text-slate-700 dark:text-slate-200">+7日</button>
+              <button type="button" data-exp-offset="30" class="py-1.5 px-0.5 text-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] sm:text-[11px] font-bold shadow-sm active:scale-95 truncate min-w-0 text-slate-700 dark:text-slate-200">+30日</button>
             </div>
           </div>
         </div>
