@@ -1666,9 +1666,9 @@ class MobileApp {
           </div>
         </div>
 
-        <div>
+        <div class="w-full min-w-0 max-w-full overflow-hidden">
           <label class="block font-bold mb-1">記録日</label>
-          <input id="p-in-date" type="date" value="${defaultDate}" class="w-full max-w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-xs outline-none" />
+          <input id="p-in-date" type="date" value="${defaultDate}" class="w-full min-w-0 max-w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs outline-none box-border block" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;" />
         </div>
 
         <div class="flex gap-2 pt-2">
@@ -1777,14 +1777,14 @@ class MobileApp {
           </select>
         </div>
 
-        <div class="p-3.5 rounded-2xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-900/60 min-w-0 max-w-full box-border">
+        <div class="p-3.5 rounded-2xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-900/60 min-w-0 max-w-full box-border overflow-hidden">
           <div class="mb-2">
             <label for="stok-in-exp" class="block font-bold text-orange-900 dark:text-orange-200 text-xs leading-normal">
               ⏳ 賞味期限・消費期限 <span class="text-rose-500 font-bold">*</span>
             </label>
           </div>
-          <div class="w-full min-w-0 mb-3">
-            <input id="stok-in-exp" type="date" value="${defaultExp}" required class="w-full min-w-0 max-w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono font-bold text-xs text-slate-900 dark:text-white outline-none box-border block shadow-sm focus:border-orange-500" />
+          <div class="w-full min-w-0 max-w-full mb-3 overflow-hidden">
+            <input id="stok-in-exp" type="date" value="${defaultExp}" required class="w-full min-w-0 max-w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono font-bold text-xs text-slate-900 dark:text-white outline-none box-border block shadow-sm focus:border-orange-500" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;" />
           </div>
           
           <div class="pt-2 border-t border-orange-200/50 dark:border-orange-900/40">
