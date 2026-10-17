@@ -188,7 +188,7 @@
         <span class="w-2 h-2 rounded-full bg-blue-900/60"></span>
       </div>
       <div class="flex items-center gap-1.5 text-[11px]">
-        <span>5G</span>
+        <span id="phone-signal">5G</span>
         <span>100%</span>
       </div>
     </div>
@@ -228,15 +228,29 @@
     setInterval(updateClock, 10000);
   </script>
 
-  <!-- PWA Service Worker Registration -->
+  <!-- PWA Service Worker Registration & Offline Management -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => {
-          console.log('SW registration error:', err);
-        });
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => {
+            console.log('[PWA] Service Worker registered:', reg.scope);
+          })
+          .catch((err) => {
+            console.warn('[PWA] Service Worker registration failed:', err);
+          });
       });
     }
+
+    function updateNetworkStatus() {
+      const sigEl = document.getElementById('phone-signal');
+      if (sigEl) {
+        sigEl.textContent = navigator.onLine ? '5G' : '📶 オフライン';
+      }
+    }
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    updateNetworkStatus();
   </script>
 </body>
 </html>

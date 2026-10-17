@@ -184,11 +184,11 @@ const initialRecipes = [
 ];
 
 const initialInventory = [
-  { id: 'inv_1', name: '卵', normalizedName: '卵', quantity: 6, unit: '個', location: 'fridge', expireDate: new Date(now + oneDayMs * 1).toISOString().split('T')[0], memo: '10個パック残り', createdAt: new Date(now - oneDayMs * 5).toISOString() },
-  { id: 'inv_2', name: '玉ねぎ', normalizedName: '玉ねぎ', quantity: 3, unit: '個', location: 'veg', expireDate: new Date(now + oneDayMs * 10).toISOString().split('T')[0], memo: 'ネット入り', createdAt: new Date(now - oneDayMs * 2).toISOString() },
-  { id: 'inv_3', name: '鶏もも肉', normalizedName: '鶏肉', quantity: 300, unit: 'g', location: 'fridge', expireDate: new Date(now).toISOString().split('T')[0], memo: '本日中推奨', createdAt: new Date(now - oneDayMs * 1).toISOString() },
-  { id: 'inv_4', name: '絹ごし豆腐', normalizedName: '豆腐', quantity: 1, unit: '丁', location: 'fridge', expireDate: new Date(now - oneDayMs).toISOString().split('T')[0], memo: '期限切れ注意', createdAt: new Date(now - oneDayMs * 4).toISOString() },
-  { id: 'inv_5', name: 'にんじん', normalizedName: '人参', quantity: 2, unit: '本', location: 'veg', expireDate: new Date(now + oneDayMs * 4).toISOString().split('T')[0], createdAt: new Date(now - oneDayMs * 3).toISOString() }
+  { id: 'inv_1', name: '卵', normalizedName: '卵', quantity: 6, unit: '個', location: 'fridge', expireDate: new Date(now + oneDayMs * 1).toISOString().split('T')[0], purchaseDate: new Date(now - oneDayMs * 5).toISOString().split('T')[0], memo: '10個パック残り', createdAt: new Date(now - oneDayMs * 5).toISOString() },
+  { id: 'inv_2', name: '玉ねぎ', normalizedName: '玉ねぎ', quantity: 3, unit: '個', location: 'veg', expireDate: new Date(now + oneDayMs * 10).toISOString().split('T')[0], purchaseDate: new Date(now - oneDayMs * 2).toISOString().split('T')[0], memo: 'ネット入り', createdAt: new Date(now - oneDayMs * 2).toISOString() },
+  { id: 'inv_3', name: '鶏もも肉', normalizedName: '鶏肉', quantity: 300, unit: 'g', location: 'fridge', expireDate: new Date(now).toISOString().split('T')[0], purchaseDate: new Date(now - oneDayMs * 1).toISOString().split('T')[0], memo: '本日中推奨', createdAt: new Date(now - oneDayMs * 1).toISOString() },
+  { id: 'inv_4', name: '絹ごし豆腐', normalizedName: '豆腐', quantity: 1, unit: '丁', location: 'fridge', expireDate: new Date(now - oneDayMs).toISOString().split('T')[0], purchaseDate: new Date(now - oneDayMs * 4).toISOString().split('T')[0], memo: '期限切れ注意', createdAt: new Date(now - oneDayMs * 4).toISOString() },
+  { id: 'inv_5', name: 'にんじん', normalizedName: '人参', quantity: 2, unit: '本', location: 'veg', expireDate: new Date(now + oneDayMs * 4).toISOString().split('T')[0], purchaseDate: new Date(now - oneDayMs * 3).toISOString().split('T')[0], createdAt: new Date(now - oneDayMs * 3).toISOString() }
 ];
 
 const initialShoppingItems = [
@@ -418,6 +418,8 @@ const RECIPE_FOOD_IMAGES = [
   'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800',
   'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800'
 ];
+
+const FALLBACK_RECIPE_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' width='100%25' height='100%25'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f97316'/%3E%3Cstop offset='100%25' stop-color='%23ea580c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23g)'/%3E%3Ctext x='50%25' y='50%25' font-size='64' text-anchor='middle' dominant-baseline='middle'%3E🍳%3C/text%3E%3C/svg%3E";
 
 function generateAiRecipeEngine(selectedItems = [], mood = 'main', userCustomNote = '', seed = 0) {
   if (!selectedItems || selectedItems.length === 0) {
@@ -718,6 +720,7 @@ class MobileApp {
       favOnly: false,
       servings: {},
       isDark: false,
+      isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
       stokSort: 'expire',
       shoppingCategoryFilter: 'all',
       recipes: [],
@@ -731,6 +734,17 @@ class MobileApp {
   async init() {
     this.state.isDark = localStorage.getItem('rm_theme') === 'dark';
     if (this.state.isDark) document.documentElement.classList.add('dark');
+
+    window.addEventListener('online', () => {
+      this.state.isOnline = true;
+      showToast('🟢 オンラインに復帰しました', 'success');
+      this.render();
+    });
+    window.addEventListener('offline', () => {
+      this.state.isOnline = false;
+      showToast('📡 オフラインモードになりました（全機能そのまま利用可能）', 'info');
+      this.render();
+    });
 
     await this.loadData();
     this.render();
@@ -769,6 +783,12 @@ class MobileApp {
             <span>レシピ一覧に戻る</span>
           </button>
           <div class="flex items-center gap-1.5">
+            ${!this.state.isOnline ? `
+              <span class="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 text-[10px] font-bold border border-amber-300 dark:border-amber-800 flex items-center gap-1">
+                <span>📡</span>
+                <span>オフライン</span>
+              </span>
+            ` : ''}
             <button id="hdr-theme" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
               ${this.state.isDark ? '☀️' : '🌙'}
             </button>
@@ -796,8 +816,13 @@ class MobileApp {
         <div class="flex items-center gap-2 cursor-pointer" id="hdr-logo">
           <span class="text-2xl">🍳</span>
           <div>
-            <h1 class="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-tight">Recipe Manager</h1>
-            <span class="text-[10px] text-orange-500 font-bold">Ver.6 • 9:16 Mobile</span>
+            <div class="flex items-center gap-1.5">
+              <h1 class="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-tight">Recipe Manager</h1>
+              ${!this.state.isOnline ? `
+                <span class="px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 text-[9px] font-bold border border-amber-300 dark:border-amber-800">📡 オフライン</span>
+              ` : ''}
+            </div>
+            <span class="text-[10px] text-orange-500 font-bold">Ver.6 • 9:16 Mobile • PWA</span>
           </div>
         </div>
         <div class="flex items-center gap-1.5">
@@ -919,7 +944,7 @@ class MobileApp {
           </div>
           ${recs.slice(0, 3).map(r => `
             <div data-rec="${r.recipe.id}" class="p-3 rounded-2xl bg-white dark:bg-slate-800 border shadow-sm flex gap-3 cursor-pointer active:scale-98 transition-all">
-              <img src="${r.recipe.imageUrl}" class="w-20 h-20 rounded-xl object-cover flex-shrink-0" />
+              <img src="${r.recipe.imageUrl || FALLBACK_RECIPE_IMAGE}" onerror="this.onerror=null;this.src='${FALLBACK_RECIPE_IMAGE}';" class="w-20 h-20 rounded-xl object-cover flex-shrink-0" />
               <div class="flex-1 min-w-0 flex flex-col justify-between">
                 <div>
                   <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">${r.badgeText}</span>
@@ -967,7 +992,7 @@ class MobileApp {
         <div class="space-y-2.5">
           ${list.map(r => `
             <div data-rec="${r.id}" class="p-3 rounded-2xl bg-white dark:bg-slate-800 border shadow-sm flex gap-3 cursor-pointer active:scale-98">
-              <img src="${r.imageUrl}" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" />
+              <img src="${r.imageUrl || FALLBACK_RECIPE_IMAGE}" onerror="this.onerror=null;this.src='${FALLBACK_RECIPE_IMAGE}';" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" />
               <div class="flex-1 min-w-0 flex flex-col justify-between">
                 <div>
                   <h4 class="font-bold text-xs truncate">${r.title}</h4>
@@ -1023,7 +1048,7 @@ class MobileApp {
         </div>
 
         <div class="relative h-44 rounded-3xl overflow-hidden shadow-md">
-          <img src="${rec.imageUrl}" class="w-full h-full object-cover" />
+          <img src="${rec.imageUrl || FALLBACK_RECIPE_IMAGE}" onerror="this.onerror=null;this.src='${FALLBACK_RECIPE_IMAGE}';" class="w-full h-full object-cover" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent"></div>
           <div class="absolute bottom-3 left-3 right-3 text-white">
             <h2 class="text-base font-black">${rec.title}</h2>
@@ -1361,6 +1386,8 @@ class MobileApp {
     const sortMode = this.state.stokSort || 'expire';
     if (sortMode === 'expire') {
       sortedList.sort((a, b) => (a.u.days ?? 999) - (b.u.days ?? 999));
+    } else if (sortMode === 'purchase') {
+      sortedList.sort((a, b) => new Date(b.purchaseDate || b.createdAt || 0) - new Date(a.purchaseDate || a.createdAt || 0));
     } else if (sortMode === 'name') {
       sortedList.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
     } else if (sortMode === 'location') {
@@ -1411,6 +1438,7 @@ class MobileApp {
           </span>
           <select id="stok-sort-select" class="px-2.5 py-1 bg-slate-50 dark:bg-slate-700 border rounded-xl font-bold outline-none text-slate-700 dark:text-slate-200">
             <option value="expire" ${sortMode === 'expire' ? 'selected' : ''}>⏳ 賞味期限が近い順</option>
+            <option value="purchase" ${sortMode === 'purchase' ? 'selected' : ''}>🛒 購入日が新しい順</option>
             <option value="name" ${sortMode === 'name' ? 'selected' : ''}>🔤 名前順 (50音)</option>
             <option value="location" ${sortMode === 'location' ? 'selected' : ''}>❄️ 保存場所・品目順</option>
             <option value="created" ${sortMode === 'created' ? 'selected' : ''}>📅 登録が新しい順</option>
@@ -1431,6 +1459,7 @@ class MobileApp {
                   <div class="flex items-center gap-2 mt-1 flex-wrap">
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${i.u.badgeClass}">${i.u.text}</span>
                     <span class="text-[10px] text-slate-400 font-mono">期限: ${i.expireDate || '未設定'}</span>
+                    ${i.purchaseDate ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono bg-slate-100 dark:bg-slate-700/60 px-1.5 py-0.2 rounded">🛒 購入: ${i.purchaseDate}</span>` : ''}
                   </div>
                   ${i.memo ? `<div class="text-[10px] text-slate-400 mt-0.5 truncate">💬 ${i.memo}</div>` : ''}
                 </div>
@@ -1741,7 +1770,9 @@ class MobileApp {
   showAddStokModal(editingItem = null) {
     const modal = document.createElement('div');
     modal.className = 'absolute inset-0 z-50 bg-white dark:bg-slate-900 px-4 pt-5 pb-24 overflow-y-auto space-y-4 animate-fadeIn modal-screen';
+    const todayStr = new Date().toISOString().split('T')[0];
     const defaultExp = editingItem?.expireDate || new Date(Date.now() + oneDayMs * 4).toISOString().split('T')[0];
+    const defaultPurchased = editingItem?.purchaseDate || todayStr;
     const isEdit = !!editingItem;
 
     modal.innerHTML = `
@@ -1775,6 +1806,17 @@ class MobileApp {
           <select id="stok-in-loc" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-xl text-xs box-border">
             ${StorageLocations.map(l => `<option value="${l.id}" ${(editingItem?.location || 'fridge') === l.id ? 'selected' : ''}>${l.name}</option>`).join('')}
           </select>
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1 flex items-center justify-between text-xs">
+            <span>🛒 最後に買った日 (購入日)</span>
+            <span class="text-[10px] text-slate-400 font-normal">※ 記録用</span>
+          </label>
+          <div class="flex gap-2 items-center">
+            <input id="stok-in-purchased" type="date" value="${defaultPurchased}" class="flex-1 min-w-0 max-w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs outline-none box-border block text-slate-900 dark:text-white" style="-webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;" />
+            <button type="button" id="btn-stok-purchased-today" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-[11px] font-bold text-slate-700 dark:text-slate-200 shrink-0 active:scale-95 transition-all">今日</button>
+          </div>
         </div>
 
         <div class="p-3.5 rounded-2xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-900/60 min-w-0 max-w-full box-border overflow-hidden">
@@ -1813,6 +1855,13 @@ class MobileApp {
     modal.querySelector('#stok-close').onclick = () => modal.remove();
     modal.querySelector('#stok-cancel').onclick = () => modal.remove();
 
+    const btnPurchasedToday = modal.querySelector('#btn-stok-purchased-today');
+    if (btnPurchasedToday) {
+      btnPurchasedToday.onclick = () => {
+        modal.querySelector('#stok-in-purchased').value = todayStr;
+      };
+    }
+
     modal.querySelectorAll('button[data-exp-offset]').forEach(b => {
       b.onclick = () => {
         const offset = Number(b.getAttribute('data-exp-offset'));
@@ -1827,6 +1876,7 @@ class MobileApp {
       const qty = Number(modal.querySelector('#stok-in-qty').value) || 1;
       const unit = modal.querySelector('#stok-in-unit').value.trim() || '個';
       const loc = modal.querySelector('#stok-in-loc').value;
+      const purchased = modal.querySelector('#stok-in-purchased')?.value || todayStr;
       const exp = modal.querySelector('#stok-in-exp').value;
       const memo = modal.querySelector('#stok-in-memo').value.trim();
 
@@ -1839,6 +1889,7 @@ class MobileApp {
           unit,
           location: loc,
           expireDate: exp,
+          purchaseDate: purchased,
           memo,
           updatedAt: new Date().toISOString()
         });
@@ -1852,6 +1903,7 @@ class MobileApp {
           unit,
           location: loc,
           expireDate: exp,
+          purchaseDate: purchased,
           memo,
           createdAt: new Date().toISOString()
         });
@@ -2072,7 +2124,7 @@ class MobileApp {
           <!-- Recipe Card -->
           <div class="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 shadow-sm space-y-3">
             <div class="relative h-44">
-              <img src="${generatedRecipe.imageUrl}" class="w-full h-full object-cover" />
+              <img src="${generatedRecipe.imageUrl || FALLBACK_RECIPE_IMAGE}" onerror="this.onerror=null;this.src='${FALLBACK_RECIPE_IMAGE}';" class="w-full h-full object-cover" />
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent"></div>
               <div class="absolute top-3 left-3 flex gap-1.5">
                 <span class="px-2 py-0.5 rounded-lg bg-orange-500 text-white font-bold text-[10px] shadow">✨ AI考案</span>

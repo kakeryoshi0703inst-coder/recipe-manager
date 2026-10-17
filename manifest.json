@@ -1,8 +1,9 @@
 {
   "name": "Recipe Manager - 料理パーソナルOS",
   "short_name": "RecipeOS",
-  "description": "レシピ・料理・買い物・在庫・価格管理アプリ",
-  "start_url": "/",
+  "description": "レシピ・料理・買い物・在庫・価格管理アプリ (完全オフライン対応)",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f172a",
